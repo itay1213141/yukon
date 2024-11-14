@@ -27,12 +27,7 @@ let config = {
         static: {
             directory: path.resolve(__dirname),
             publicPath: '/',
-            watch: {
-                ignored: [
-                    path.resolve(__dirname, '.git'),
-                    path.resolve(__dirname, 'node_modules')
-                ]
-            }
+            watch: false
         },
         devMiddleware: {
             writeToDisk: true
@@ -52,6 +47,9 @@ let config = {
 
             '/create/scripts/php': 'http://localhost:80'
         },
+        client: {
+            overlay: false
+        },
         host: 'localhost',
         port: 8080,
         hot: false
@@ -61,10 +59,7 @@ let config = {
             '@engine': path.resolve(__dirname, 'src/engine'),
             '@scenes': path.resolve(__dirname, 'src/scenes'),
             '@components': path.resolve(__dirname, 'src/scenes/components'),
-            '@rooms': path.resolve(__dirname, 'src/scenes/rooms'),
-            '@games': path.resolve(__dirname, 'src/scenes/games'),
-            '@igloos': path.resolve(__dirname, 'src/scenes/igloos'),
-            '@parties': path.resolve(__dirname, 'src/scenes/parties')
+            '@igloos': path.resolve(__dirname, 'src/scenes/igloos')
         }
     },
     module: {

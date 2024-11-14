@@ -3,6 +3,7 @@ import BaseScene from '@scenes/base/BaseScene'
 import ClientController from './penguin/ClientController'
 import PenguinFactory from './penguin/PenguinFactory'
 import RoomFactory from './room/RoomFactory'
+import RoomScene from '@scenes/rooms/RoomScene'
 
 
 export default class WorldController extends BaseScene {
@@ -34,14 +35,14 @@ export default class WorldController extends BaseScene {
             return this.createRoom(args)
         }
 
-        this.room.events.once('shutdown', () => this.createRoom(args))
+        this.room.events.once('destroy', () => this.createRoom(args))
         this.room.stop()
     }
 
-    createRoom(args) {
-        this.room = this.roomFactory.create(args)
+    async createRoom(args) {
+        this.room = await this.roomFactory.create(args)
 
-        if (args.users) {
+        if (this.room instanceof RoomScene) {
             this.lastRoom = this.room.id
 
             this.room.waiting = args.users

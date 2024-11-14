@@ -1,4 +1,4 @@
-export default class BaseContainer extends Phaser.GameObjects.Container {
+export default class BaseLayer extends Phaser.GameObjects.Layer {
 
     get crumbs() {
         return this.scene.crumbs

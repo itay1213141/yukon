@@ -159,9 +159,18 @@ export default class RoomScene extends BaseScene {
     }
 
     stop() {
+        const world = this.world
+
+        this.events.once('destroy', () => {
+            world.memory.unloadPack(`${this.key.toLowerCase()}-pack`)
+
+            world.interface.unloadWidgets()
+        })
+
         this.interface.main.snowballFactory.clearBalls()
         this.soundManager.stopAllButMusic()
-        this.scene.stop()
+
+        this.scene.remove()
     }
 
     getWaiting(id) {
@@ -234,7 +243,7 @@ export default class RoomScene extends BaseScene {
     }
 
     triggerRoom(id, x, y) {
-        let room = this.crumbs.scenes.rooms[id]
+        let room = this.crumbs.rooms[id]
 
         this.world.client.sendJoinRoom(id, room.key, x, y)
     }
