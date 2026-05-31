@@ -218,12 +218,41 @@ export default class RuffleController extends BaseScene {
             splashScreen: false,
             logLevel: localStorage.logging === 'true' ? 'info' : 'error'
         })
+
+        // Forward pointer events from canvas to Ruffle so hover animations trigger.
+        // Canvas still receives events first — Phaser movement is unaffected.
+        const events = ['pointermove', 'pointerover', 'pointerout', 'pointerdown', 'pointerup']
+        this.bgCanvasForward = (e) => {
+            if (!this.bgPlayer) return
+            try {
+                this.bgPlayer.dispatchEvent(new PointerEvent(e.type, {
+                    bubbles: false,
+                    cancelable: false,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    movementX: e.movementX,
+                    movementY: e.movementY,
+                    button: e.button,
+                    buttons: e.buttons,
+                    pointerId: e.pointerId,
+                    pointerType: e.pointerType || 'mouse'
+                }))
+            } catch (_) {}
+        }
+        events.forEach(t => canvas.addEventListener(t, this.bgCanvasForward))
+        this.bgForwardEvents = events
     }
 
     stopBackground() {
         if (this.bgResizeHandler) {
             window.removeEventListener('resize', this.bgResizeHandler)
             this.bgResizeHandler = null
+        }
+
+        if (this.bgCanvasForward && this.bgForwardEvents) {
+            this.bgForwardEvents.forEach(t => this.game.canvas.removeEventListener(t, this.bgCanvasForward))
+            this.bgCanvasForward = null
+            this.bgForwardEvents = null
         }
 
         if (this.bgDiv) {
