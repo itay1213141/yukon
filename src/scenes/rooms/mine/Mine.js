@@ -10,7 +10,6 @@ export default class Mine extends RoomScene {
             'cave': () => this.triggerRoom(806, 1200, 650),
             'cart': () => this.triggerGame(905)
         }
-
     }
 
     _preload() {
@@ -18,13 +17,8 @@ export default class Mine extends RoomScene {
     }
 
     _create() {
-        this.ruffle.bootBackground('mine.swf')
+        this.add.image(0, 0, 'mine_bg').setOrigin(0, 0)
         this.events.emit('scene-awake')
-    }
-
-    onDestroy() {
-        super.onDestroy()
-        this.ruffle.stopBackground()
     }
 
 }
