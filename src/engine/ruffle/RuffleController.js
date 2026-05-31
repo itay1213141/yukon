@@ -3,6 +3,7 @@ import BaseScene from '@scenes/base/BaseScene'
 
 const basePath = 'assets/media/flash/'
 const gamesPath = `${basePath}games/`
+const roomsPath = `${basePath}rooms/`
 
 const keys = [
     'getGamesPath',
@@ -164,6 +165,54 @@ export default class RuffleController extends BaseScene {
         this.music = music || 0
 
         this.events.once('update', () => this.boot())
+    }
+
+    bootBackground(filename) {
+        this.events.once('update', () => this.bootBg(filename))
+    }
+
+    bootBg(filename) {
+        const ruffle = window.RufflePlayer.newest()
+
+        this.bgPlayer = ruffle.createPlayer()
+
+        this.bgDiv = document.createElement('div')
+        Object.assign(this.bgDiv.style, {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            overflow: 'hidden'
+        })
+        this.bgDiv.appendChild(this.bgPlayer)
+
+        // Insert before canvas so it sits behind the transparent Phaser canvas
+        const parent = this.game.canvas.parentNode
+        parent.style.position = 'relative'
+        parent.insertBefore(this.bgDiv, this.game.canvas)
+
+        this.bgPlayer.load({
+            url: `${roomsPath}${filename}`,
+            allowScriptAccess: true,
+            menu: false,
+            contextMenu: 'off',
+            scale: 'noborder',
+            autoplay: 'on',
+            splashScreen: false,
+            logLevel: localStorage.logging === 'true' ? 'info' : 'error'
+        })
+    }
+
+    stopBackground() {
+        this.events.off('update')
+
+        if (this.bgDiv) {
+            this.bgDiv.remove()
+            this.bgDiv = null
+            this.bgPlayer = null
+        }
     }
 
     boot() {
