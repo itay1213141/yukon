@@ -3,8 +3,8 @@ import BaseDynamicWidget from '@scenes/base/BaseDynamicWidget'
 
 export default class BookContainer extends BaseDynamicWidget {
 
-    constructor(key) {
-        super(key)
+    constructor(scene, x, y) {
+        super(scene, x, y)
 
         // Current page number
         this.page = 0
@@ -55,6 +55,8 @@ export default class BookContainer extends BaseDynamicWidget {
     }
 
     setButtonsVisible() {
+        if (!this.buttons) return
+
         // Not visible on first and last page
         let visible = this.page > 0 && this.page < this.pages.length - 1
 
