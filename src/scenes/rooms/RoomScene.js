@@ -218,12 +218,7 @@ export default class RoomScene extends BaseUnloadableScene {
         let body = this.matter.add.fromPhysicsEditor(0, 0, this.roomPhysics[key])
         this.matter.body.setPosition(body, body.centerOffset) // Centers body in room
 
-        // Debug color
-        color = (color) ? color : body.render.fillColor
-
-        body.render.lineColor = color
-        body.render.fillColor = color
-        body.render.fillOpacity = 0.5
+        body.render.visible = false
 
         return body
     }
