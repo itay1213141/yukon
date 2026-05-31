@@ -169,6 +169,7 @@ export default class RuffleController extends BaseScene {
 
     bootBackground(filename) {
         const ruffle = window.RufflePlayer.newest()
+        const canvas = this.game.canvas
 
         this.bgPlayer = ruffle.createPlayer()
         Object.assign(this.bgPlayer.style, {
@@ -180,24 +181,31 @@ export default class RuffleController extends BaseScene {
         this.bgDiv = document.createElement('div')
         Object.assign(this.bgDiv.style, {
             position: 'absolute',
-            top: '0',
-            left: '0',
-            width: '100%',
-            height: '100%',
             pointerEvents: 'none',
             overflow: 'hidden',
             zIndex: '0'
         })
         this.bgDiv.appendChild(this.bgPlayer)
 
-        const parent = this.game.canvas.parentNode
+        const parent = canvas.parentNode
         parent.style.position = 'relative'
         parent.appendChild(this.bgDiv)
 
+        // Match bgDiv to canvas rendered bounds, and keep in sync on resize
+        const sync = () => {
+            if (!this.bgDiv) return
+            this.bgDiv.style.left   = `${canvas.offsetLeft}px`
+            this.bgDiv.style.top    = `${canvas.offsetTop}px`
+            this.bgDiv.style.width  = `${canvas.offsetWidth}px`
+            this.bgDiv.style.height = `${canvas.offsetHeight}px`
+        }
+        sync()
+        this.bgResizeHandler = sync
+        window.addEventListener('resize', this.bgResizeHandler)
+
         // Explicitly stack: bgDiv(0) < canvas(1) < domContainer(2)
-        // position: relative needed so z-index is respected on the canvas (static by default)
-        this.game.canvas.style.position = 'relative'
-        this.game.canvas.style.zIndex = '1'
+        canvas.style.position = 'relative'
+        canvas.style.zIndex = '1'
         this.game.domContainer.style.zIndex = '2'
 
         this.bgPlayer.load({
@@ -213,6 +221,11 @@ export default class RuffleController extends BaseScene {
     }
 
     stopBackground() {
+        if (this.bgResizeHandler) {
+            window.removeEventListener('resize', this.bgResizeHandler)
+            this.bgResizeHandler = null
+        }
+
         if (this.bgDiv) {
             this.bgDiv.remove()
             this.bgDiv = null
