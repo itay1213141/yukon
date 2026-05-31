@@ -38,11 +38,7 @@ const game = {
     physics: {
         default: 'matter',
         matter: {
-            debug: {
-                renderFill: false,
-                renderLine: false,
-                showInternalEdges: true
-            },
+            debug: false,
             gravity: false
         }
     },
