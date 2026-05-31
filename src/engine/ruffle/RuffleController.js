@@ -168,13 +168,15 @@ export default class RuffleController extends BaseScene {
     }
 
     bootBackground(filename) {
-        this.events.once('update', () => this.bootBg(filename))
-    }
-
-    bootBg(filename) {
+        // Called directly — no scene update loop needed since we're doing raw DOM work
         const ruffle = window.RufflePlayer.newest()
 
         this.bgPlayer = ruffle.createPlayer()
+        Object.assign(this.bgPlayer.style, {
+            width: '100%',
+            height: '100%',
+            display: 'block'
+        })
 
         this.bgDiv = document.createElement('div')
         Object.assign(this.bgDiv.style, {
@@ -188,7 +190,7 @@ export default class RuffleController extends BaseScene {
         })
         this.bgDiv.appendChild(this.bgPlayer)
 
-        // Insert before canvas so it sits behind the transparent Phaser canvas
+        // Insert before canvas — elements earlier in DOM render below later ones
         const parent = this.game.canvas.parentNode
         parent.style.position = 'relative'
         parent.insertBefore(this.bgDiv, this.game.canvas)

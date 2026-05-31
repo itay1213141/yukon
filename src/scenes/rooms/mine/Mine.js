@@ -11,7 +11,6 @@ export default class Mine extends RoomScene {
             'cart': () => this.triggerGame(905)
         }
 
-        this.music = '29'
     }
 
     _preload() {
