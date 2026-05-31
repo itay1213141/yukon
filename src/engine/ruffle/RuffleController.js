@@ -195,6 +195,8 @@ export default class RuffleController extends BaseScene {
         parent.appendChild(this.bgDiv)
 
         // Explicitly stack: bgDiv(0) < canvas(1) < domContainer(2)
+        // position: relative needed so z-index is respected on the canvas (static by default)
+        this.game.canvas.style.position = 'relative'
         this.game.canvas.style.zIndex = '1'
         this.game.domContainer.style.zIndex = '2'
 
@@ -217,6 +219,7 @@ export default class RuffleController extends BaseScene {
             this.bgPlayer = null
         }
 
+        this.game.canvas.style.position = ''
         this.game.canvas.style.zIndex = ''
         this.game.domContainer.style.zIndex = ''
     }
