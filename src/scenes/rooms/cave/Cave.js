@@ -19,7 +19,7 @@ export default class Cave extends RoomScene {
         this.roomTriggers = {
             'boiler': null,
             'plaza': () => this.triggerRoom(300, 582, 588),
-            'mine': () => this.triggerGame(905)
+            'mine': () => this.triggerRoom(808, 200, 700)
         }
 
         /* END-USER-CTR-CODE */
