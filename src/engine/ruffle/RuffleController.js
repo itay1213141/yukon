@@ -168,7 +168,6 @@ export default class RuffleController extends BaseScene {
     }
 
     bootBackground(filename) {
-        // Called directly — no scene update loop needed since we're doing raw DOM work
         const ruffle = window.RufflePlayer.newest()
 
         this.bgPlayer = ruffle.createPlayer()
@@ -186,14 +185,18 @@ export default class RuffleController extends BaseScene {
             width: '100%',
             height: '100%',
             pointerEvents: 'none',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            zIndex: '0'
         })
         this.bgDiv.appendChild(this.bgPlayer)
 
-        // Insert before canvas — elements earlier in DOM render below later ones
         const parent = this.game.canvas.parentNode
         parent.style.position = 'relative'
-        parent.insertBefore(this.bgDiv, this.game.canvas)
+        parent.appendChild(this.bgDiv)
+
+        // Explicitly stack: bgDiv(0) < canvas(1) < domContainer(2)
+        this.game.canvas.style.zIndex = '1'
+        this.game.domContainer.style.zIndex = '2'
 
         this.bgPlayer.load({
             url: `${roomsPath}${filename}`,
@@ -208,13 +211,14 @@ export default class RuffleController extends BaseScene {
     }
 
     stopBackground() {
-        this.events.off('update')
-
         if (this.bgDiv) {
             this.bgDiv.remove()
             this.bgDiv = null
             this.bgPlayer = null
         }
+
+        this.game.canvas.style.zIndex = ''
+        this.game.domContainer.style.zIndex = ''
     }
 
     boot() {
